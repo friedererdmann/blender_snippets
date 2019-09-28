@@ -5,11 +5,8 @@ from collections import namedtuple
 from PySide2.QtWidgets import QApplication
 
         
-def get_blender_hwnd():
+def get_process_hwnds():
     # https://stackoverflow.com/questions/37501191/how-to-get-windows-window-names-with-ctypes-in-python
-    blender_pid = os.getpid()
-    global blender_hwnd
-    blender_hwnd = 0
     user32 = ctypes.WinDLL('user32', use_last_error=True)
 
     def check_zero(result, func, args):    
@@ -22,7 +19,7 @@ def get_blender_hwnd():
     if not hasattr(wintypes, 'LPDWORD'): # PY2
         wintypes.LPDWORD = ctypes.POINTER(wintypes.DWORD)
 
-    WindowInfo = namedtuple('WindowInfo', 'pid title')
+    WindowInfo = namedtuple('WindowInfo', 'title hwnd')
 
     WNDENUMPROC = ctypes.WINFUNCTYPE(
         wintypes.BOOL,
@@ -57,7 +54,6 @@ def get_blender_hwnd():
         result = []
         @WNDENUMPROC
         def enum_proc(hWnd, lParam):
-            global blender_hwnd
             if user32.IsWindowVisible(hWnd):
                 pid = wintypes.DWORD()
                 tid = user32.GetWindowThreadProcessId(
@@ -65,18 +61,16 @@ def get_blender_hwnd():
                 length = user32.GetWindowTextLengthW(hWnd) + 1
                 title = ctypes.create_unicode_buffer(length)
                 user32.GetWindowTextW(hWnd, title, length)
-                result.append(WindowInfo(pid.value, title.value))
-                if pid.value == blender_pid and "Blender" in title.value:
-                    blender_hwnd = hWnd
+                current_pid = os.getpid()
+                if pid.value == current_pid:
+                    result.append(WindowInfo(title.value, hWnd))
             return True
         user32.EnumWindows(enum_proc, 0)
         return sorted(result)
     
-    list_windows()
-    return blender_hwnd
+    return list_windows()
 
-
-def get_window_order():
+def get_window_z_order():
     '''Returns windows in z-order (top first)'''
     # https://stackoverflow.com/questions/6381198/get-window-z-order-with-python-windows-extensions
     user32 = ctypes.windll.user32
@@ -92,37 +86,35 @@ def get_window_order():
         lst.append(next)
     return lst
 
-
+'''
 def get_qt_window_order():
-    window_order = get_window_order()
+    window_order = get_window_z_order()
     app = QApplication.instance()
     qt_windows = app.topLevelWidgets()
     qt_window_ids = [window.winId() for window in qt_windows]
-    qt_ordered_ids = []
-    for window in window_order:
-        if window in qt_window_ids:
-            qt_ordered_ids.append(window)
-    return qt_ordered_ids
+    return qt_window_ids
+    # return order_window_list(qt_window_ids)
 
 
-qt_order = get_qt_window_order()
-all_windows = get_window_order()
-blender_main = get_blender_hwnd() 
+def order_window_list(list_of_windows=[]):
+    all_windows_ordered_list = get_window_z_order()
+    ordered_list = []
+    for window in all_windows_ordered_list:
+        if window in list_of_windows:
+            ordered_list.append(window)
+    return ordered_list
+'''
 
-print("QTWidget HWND in order are {0}".format(qt_order))
-print("Blender's HWND is {0}".format(blender_main))
+# qt_order = get_qt_window_order()
+all_windows = get_window_z_order()
+process_windows = get_process_hwnds() 
+
+# blender_windows = [b_window.hwnd for b_window in process_windows if b_window.hwnd not in qt_order]
+window_dict = {wind.hwnd: wind.title for wind in process_windows}
+
 print("Sort order is:")
-i = 1
+i = 0
 for window in all_windows:
-    if window == blender_main:
-        print("\t{0} Blender".format(str(i)))
-        i += 1
-    if window in qt_order:
-        print("\t{0} QtWidget {1}".format(str(i), str(window)))
-        i += 1
-
-if qt_order:
-    z_blender = all_windows.index(blender_main)
-    z_qt = all_windows.index(qt_order[-1])
-    if z_blender < z_qt:
-        print("Blender is covering at least one of the QtWindows")
+    if window in window_dict:
+        print("\t", i, window_dict[window])
+    i += 1
