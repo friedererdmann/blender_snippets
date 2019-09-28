@@ -4,7 +4,6 @@ from ctypes import wintypes
 from collections import namedtuple
 from PySide2.QtWidgets import QApplication
 
-
         
 def get_blender_hwnd():
     # https://stackoverflow.com/questions/37501191/how-to-get-windows-window-names-with-ctypes-in-python
@@ -69,13 +68,13 @@ def get_blender_hwnd():
                 result.append(WindowInfo(pid.value, title.value))
                 if pid.value == blender_pid and "Blender" in title.value:
                     blender_hwnd = hWnd
-                    print(hWnd)
             return True
         user32.EnumWindows(enum_proc, 0)
         return sorted(result)
     
     list_windows()
     return blender_hwnd
+
 
 def get_window_order():
     '''Returns windows in z-order (top first)'''
@@ -99,7 +98,6 @@ def get_qt_window_order():
     app = QApplication.instance()
     qt_windows = app.topLevelWidgets()
     qt_window_ids = [window.winId() for window in qt_windows]
-    print(qt_windows)
     qt_ordered_ids = []
     for window in window_order:
         if window in qt_window_ids:
@@ -108,21 +106,23 @@ def get_qt_window_order():
 
 
 qt_order = get_qt_window_order()
-
-print("QTWindows", qt_order)
-
 all_windows = get_window_order()
-
 blender_main = get_blender_hwnd() 
 
-print(all_windows)
-
-if blender_main in all_windows:
-    print("Blender", blender_main)
-    
+print("QTWidget HWND in order are {0}".format(qt_order))
+print("Blender's HWND is {0}".format(blender_main))
+print("Sort order is:")
+i = 1
+for window in all_windows:
+    if window == blender_main:
+        print("\t{0} Blender".format(str(i)))
+        i += 1
+    if window in qt_order:
+        print("\t{0} QtWidget {1}".format(str(i), str(window)))
+        i += 1
 
 if qt_order:
     z_blender = all_windows.index(blender_main)
     z_qt = all_windows.index(qt_order[-1])
     if z_blender < z_qt:
-        print("we need to move the qt windows in front")
+        print("Blender is covering at least one of the QtWindows")
