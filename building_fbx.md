@@ -13,8 +13,10 @@ You are responsible to adhere to the Autodesk FBX SDK's terms and conditions if 
 
 To start building your own FBX Python SDK, please make sure you have the following things setup:
 
-* VisualStudio 2015
+* VisualStudio 2015 (Community Edition works)
   * Make sure you have the packages for Visual C++ and the Windows 10 SDK and Tools installed
+  * You can download the Community Edition for free here, if you sign up for Visual Studio Dev Essentials for free
+    * https://my.visualstudio.com/Downloads?q=visual%20studio%202015&wt.mc_id=o~msft~vscom~older-downloads
 * Python 3.7.4 __64-bit__
   * https://www.python.org/downloads/release/python-374/
 
