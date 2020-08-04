@@ -32,7 +32,7 @@ Install all packages below with `sudo apt-get install` and then the package name
 
 > If the installation of any package fails, try to run `sudo apt-get update` first.
 
-Get Python 3.7.4 from your distribution package manager or build it yourself from sources. If you're building for Blender, you might also be able to use Blender's build-in Python distribution.
+Get Python 3.7.4 from your distribution package manager or build it yourself from sources.
 
 Under Linux, all references to `python` should be `python3` instead (if you're building with Python 3).
 
