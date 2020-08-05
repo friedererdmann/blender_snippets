@@ -24,6 +24,11 @@ To start building your own FBX Python SDK, please make sure you have the followi
 
 ### On Linux
 
+Get Python 3.7.4 from your distribution package manager or build it yourself from sources.
+
+Under Linux, all references to `python` should be `python3` or `python3.7` instead (if you're building with Python 3).
+
+#### Ubuntu (apt-get)
 Install all packages below with `sudo apt-get install` and then the package name:
 * `build-essential`
 * `libsqlite3-dev`
@@ -32,9 +37,10 @@ Install all packages below with `sudo apt-get install` and then the package name
 
 > If the installation of any package fails, try to run `sudo apt-get update` first.
 
-Get Python 3.7.4 from your distribution package manager or build it yourself from sources.
+#### CentOS (yum)
+The quickest way to install the required development packages is using `sudo yum groupinstall 'Development Tools'`.
 
-Under Linux, all references to `python` should be `python3` instead (if you're building with Python 3).
+Next you will also need `sudo yum install libxml2-devel`
 
 ## Download
 
