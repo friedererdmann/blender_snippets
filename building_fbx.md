@@ -44,10 +44,13 @@ Next you will also need `sudo yum install libxml2-devel`
 
 ## Download
 
-* https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2020-0
-  * FBX SDK Windows - FBX SDK 2020.0.1 VS2015
-  * FBX Python Bindings - FBX SDK 2020.0.1 Python Windows
-  * If you're building on Linux, get the packages for Linux instead
+* https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2020-1
+  * Windows
+    * FBX SDK Windows - FBX SDK 2020.0.1 VS2015
+    * FBX Python Bindings - FBX SDK 2020.0.1 Python Windows
+  * Linux
+    * FBX SDK 2020.1 for Linux
+    * FBX SDK 2020.1 Python Bindings for Linux
 * https://www.riverbankcomputing.com/software/sip/download
   * Sip 4.9.13
 
